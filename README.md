@@ -83,3 +83,4 @@ python test.py --ckpt log/1/iwslt2016_E17L2.78-26078 (OR yourCkptFile OR yourCkp
 ## Notes
 * Beam decoding will be added soon.
 * I'm going to update the code when TF2.0 comes out if possible.
+* ref: https://github.com/Kyubyong/transformer
