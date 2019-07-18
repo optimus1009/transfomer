@@ -38,7 +38,7 @@ class Transformer:
     def encode(self, xs, training=True):
         '''
         Returns
-        memory: encoder outputs. (N, T1, d_model)
+        memory: encoder outputs. (N, T1, d_model) (batch_size, sequence_length, embedding_size)
         '''
         with tf.variable_scope("encoder", reuse=tf.AUTO_REUSE):
             x, seqlens, sents1 = xs
