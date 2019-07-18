@@ -88,6 +88,8 @@ def generator_fn(sents1, sents2, vocab_fpath):
         decoder_input, y = y[:-1], y[1:]
 
         x_seqlen, y_seqlen = len(x), len(y)
+        # x: [2,3,4,6,4,4] x_seqlen: 6 sent1: grj jgrd sj j dkf gj
+        # decoder_input 与 y是错位的，decoder_input 用户输入， y用于target
         yield (x, x_seqlen, sent1), (decoder_input, y, y_seqlen, sent2)
 
 def input_fn(sents1, sents2, vocab_fpath, batch_size, shuffle=False):
