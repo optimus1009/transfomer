@@ -77,14 +77,14 @@ def scaled_dot_product_attention(Q, K, V,
         outputs /= d_k ** 0.5
 
         # key masking
-        outputs = mask(outputs, Q, K, type="key")
+        outputs = mask(outputs, Q, K, type="key") # shape: (N, T_q, T_k)
 
         # causality or future blinding masking
         if causality:
             outputs = mask(outputs, type="future")
 
-        # softmax
-        outputs = tf.nn.softmax(outputs)
+        # softmax , softmax 如果没有指定axis参数，则默认为axis=-1
+        outputs = tf.nn.softmax(outputs) # (N, T_q, T_k)
         attention = tf.transpose(outputs, [0, 2, 1])
         tf.summary.image("attention", tf.expand_dims(attention[:1], -1))
 
@@ -129,6 +129,7 @@ def mask(inputs, queries=None, keys=None, type=None):
     padding_num = -2 ** 32 + 1
     if type in ("k", "key", "keys"):
         # Generate masks
+        # masks = tf.sign(tf.abs(tf.reduce_sum(keys, axis=-1)))
         masks = tf.sign(tf.reduce_sum(tf.abs(keys), axis=-1))  # (N, T_k)
         masks = tf.expand_dims(masks, 1) # (N, 1, T_k)
         masks = tf.tile(masks, [1, tf.shape(queries)[1], 1])  # (N, T_q, T_k)
@@ -183,7 +184,13 @@ def multihead_attention(queries, keys, values,
         K = tf.layers.dense(keys, d_model, use_bias=False) # (N, T_k, d_model)
         V = tf.layers.dense(values, d_model, use_bias=False) # (N, T_k, d_model)
         
-        # Split and concat
+        # 论文提到，他们发现将 Q、K、V 通过一个线性映射之后，分成 h 份，
+        # 对每一份进行 scaled dot-product attention 效果更好。然后，
+        # 把各个部分的结果合并起来，再次经过线性映射，得到最终的输出。
+        # 这就是所谓的 multi-head attention。上面的超参数 h 就是 heads 的数量。论文默认是 8。
+        # 指的注意的是 这里的分成 h 份,是在 Q, K, V 的维度上进行的。因此进入到 scaled dot_product attention 实际上等位未进入之前的 Q/h, K/h, V/h
+        # 因为这里是先进行tf.split 切分，在进行 tf.concat
+        # ref: https://zhuanlan.zhihu.com/p/47812375
         Q_ = tf.concat(tf.split(Q, num_heads, axis=2), axis=0) # (h*N, T_q, d_model/h)
         K_ = tf.concat(tf.split(K, num_heads, axis=2), axis=0) # (h*N, T_k, d_model/h)
         V_ = tf.concat(tf.split(V, num_heads, axis=2), axis=0) # (h*N, T_k, d_model/h)
