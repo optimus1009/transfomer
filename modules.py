@@ -13,7 +13,7 @@ import tensorflow as tf
 import numpy as np
 
 def ln(inputs, epsilon = 1e-8, scope="ln"):
-    '''Applies layer normalization. See https://arxiv.org/abs/1607.06450.
+    '''ref: https://arxiv.org/abs/1607.06450.
     inputs: A tensor with 2 or more dimensions, where the first dimension has `batch_size`.
     epsilon: A floating number. A very small number for preventing ZeroDivision Error.
     scope: Optional scope for `variable_scope`.
@@ -24,7 +24,8 @@ def ln(inputs, epsilon = 1e-8, scope="ln"):
     with tf.variable_scope(scope, reuse=tf.AUTO_REUSE):
         inputs_shape = inputs.get_shape()
         params_shape = inputs_shape[-1:]
-    
+
+        # tf.nn.moments() 计算均值和方差
         mean, variance = tf.nn.moments(inputs, [-1], keep_dims=True)
         beta= tf.get_variable("beta", params_shape, initializer=tf.zeros_initializer())
         gamma = tf.get_variable("gamma", params_shape, initializer=tf.ones_initializer())
@@ -201,10 +202,8 @@ def multihead_attention(queries, keys, values,
         # Restore shape
         outputs = tf.concat(tf.split(outputs, num_heads, axis=0), axis=2 ) # (N, T_q, d_model)
               
-        # Residual connection
+        # add 和 layer_norm 操作，先add后layer_norm
         outputs += queries
-              
-        # Normalize
         outputs = ln(outputs)
  
     return outputs
@@ -226,19 +225,25 @@ def ff(inputs, num_units, scope="positionwise_feedforward"):
         # Outer layer
         outputs = tf.layers.dense(outputs, num_units[1])
 
-        # Residual connection
+        # add 和 layer_norm 操作，先add后layer_norm
         outputs += inputs
-        
-        # Normalize
         outputs = ln(outputs)
     
     return outputs
 
 def label_smoothing(inputs, epsilon=0.1):
-    '''Applies label smoothing. See 5.4 and https://arxiv.org/abs/1512.00567.
+    '''ref https://arxiv.org/abs/1512.00567.
+       ref https://blog.csdn.net/qiu931110/article/details/86684241
     inputs: 3d tensor. [N, T, V], where V is the number of vocabulary.
     epsilon: Smoothing rate.
-    
+    label smoothing 将真实概率做如下改变
+    原始概率
+            Pi = 1 if (i=y)
+            Pi = 0 if (i!=y)
+    变成如下概率分布
+            Pi = (1 - epsilon) if(x = y)
+            Pi = (epsilon/K) if (x != y) K为类别总数(在这里就是vocab_size)
+
     For example,
     
     ```
@@ -309,7 +314,7 @@ def positional_encoding(inputs,
         return tf.to_float(outputs)
 
 def noam_scheme(init_lr, global_step, warmup_steps=4000.):
-    '''Noam scheme learning rate decay  ref: https://github.com/tensorflow/tensor2tensor/issues/555
+    ''' ref: https://github.com/tensorflow/tensor2tensor/issues/555
     init_lr: initial learning rate. scalar.
     global_step: scalar.
     warmup_steps: scalar. During warmup_steps, learning rate increases

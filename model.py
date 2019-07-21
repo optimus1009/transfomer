@@ -114,7 +114,7 @@ class Transformer:
         # Final linear projection (embedding weights are shared)
         weights = tf.transpose(self.embeddings) # (d_model, vocab_size) 为什么这里可以直接用 embeddings: 根据论文section 3.4 数书和输出共享embedding
         logits = tf.einsum('ntd,dk->ntk', dec, weights) # (N, T2, vocab_size)
-        y_hat = tf.to_int32(tf.argmax(logits, axis=-1))
+        y_hat = tf.to_int32(tf.argmax(logits, axis=-1)) # argmax 与 arg_max 的区别
 
         return logits, y_hat, y, sents2
 
@@ -134,7 +134,9 @@ class Transformer:
         y_ = label_smoothing(tf.one_hot(y, depth=self.hp.vocab_size)) # batch_size*T*vocab_size
         ce = tf.nn.softmax_cross_entropy_with_logits_v2(logits=logits, labels=y_) #  logits 未经过softmax处理，因为函数内部进行了处理，
         nonpadding = tf.to_float(tf.not_equal(y, self.token2idx["<pad>"]))  # 0: <pad> 相当于mask，不等长序列最后计算loss要剔除padding项
-        loss = tf.reduce_sum(ce * nonpadding) / (tf.reduce_sum(nonpadding) + 1e-7) # 计算整个batch内的平均loss，1e-7防止分母为0的情况发生，
+        # 计算整个batch内的平均loss，1e-7防止分母为0的情况发生
+        # ce * nonpadding 只计算非padding的 loss
+        loss = tf.reduce_sum(ce * nonpadding) / (tf.reduce_sum(nonpadding) + 1e-7)
 
         global_step = tf.train.get_or_create_global_step()
         lr = noam_scheme(self.hp.lr, global_step, self.hp.warmup_steps)
