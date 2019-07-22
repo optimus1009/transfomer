@@ -62,7 +62,7 @@ with tf.Session() as sess:
     summary_writer = tf.summary.FileWriter(hp.logdir, sess.graph)
 
     sess.run(train_init_op)
-    total_steps = hp.num_epochs * num_train_batches # 总的训练步数
+    total_steps = hp.num_epochs * num_train_batches # 总的训练步数  num_train_batches: 训练总的样本数需要的 batch 数目
     logging.info("total train steps: {0}".format(total_steps))
     _gs = sess.run(global_step)
     for i in tqdm(range(_gs, total_steps + 1)):
