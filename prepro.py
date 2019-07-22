@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 #/usr/bin/python3
 '''
-ref: https://www.github.com/kyubyong/transformer.
-
 Preprocess the iwslt 2016 datasets.
 '''
 

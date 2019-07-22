@@ -35,7 +35,7 @@ eval_batches, num_eval_batches, num_eval_samples = get_batch(hp.eval1, hp.eval2,
                                                              hp.vocab, hp.batch_size,
                                                              shuffle=False)
 
-# create a iterator of the correct shape and type
+# 这里使用 from_structure 高效读取数据 ref https://www.tensorflow.org/guide/datasets
 iter = tf.data.Iterator.from_structure(train_batches.output_types, train_batches.output_shapes)
 xs, ys = iter.get_next()
 

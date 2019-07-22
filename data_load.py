@@ -1,14 +1,6 @@
 # -*- coding: utf-8 -*-
 #/usr/bin/python3
-'''
-Feb. 2019 by kyubyong park.
-kbpark.linguist@gmail.com.
-https://www.github.com/kyubyong/transformer
 
-Note.
-if safe, entities on the source side have the prefix 1, and the target side 2, for convenience.
-For example, fpath1, fpath2 means source file path and target file path, respectively.
-'''
 import tensorflow as tf
 from utils import calc_num_batches
 from hparams import Hparams
@@ -129,13 +121,13 @@ def input_fn(sents1, sents2, vocab_fpath, batch_size, shuffle=False):
         generator_fn, # (x, x_seqlen, sent1), (decoder_input, y, y_seqlen, sent2)
         output_shapes=shapes,
         output_types=types,
-        args=(sents1, sents2, vocab_fpath))  # <- arguments for generator_fn. converted to np string arrays
+        args=(sents1, sents2, vocab_fpath))
 
     if shuffle: # for training
         dataset = dataset.shuffle(128*batch_size)
 
-    dataset = dataset.repeat()  # iterate forever
-    dataset = dataset.padded_batch(batch_size, shapes, paddings).prefetch(1)
+    dataset = dataset.repeat()
+    dataset = dataset.padded_batch(batch_size, shapes, paddings).prefetch(128)
 
     return dataset
 
@@ -172,9 +164,10 @@ if __name__ == "__main__":
     xs = iter.get_next()
     train_init_op = iter.make_initializer(train_batches)
     with tf.Session() as sess:
+        sess.run(train_init_op)
         while True:
             try:
-                _, dataset= sess.run([train_init_op,xs])
+                dataset= sess.run(xs)
                 x,y =  dataset
                 print(x[-1][0])
             except tf.errors.OutOfRangeError:
