@@ -114,7 +114,7 @@ class Transformer:
         # Final linear projection (embedding weights are shared)
         weights = tf.transpose(self.embeddings) # (d_model, vocab_size) 为什么这里可以直接用 embeddings: 根据论文section 3.4 数书和输出共享embedding
         logits = tf.einsum('ntd,dk->ntk', dec, weights) # (N, T2, vocab_size)
-        y_hat = tf.to_int32(tf.argmax(logits, axis=-1)) # argmax 与 arg_max 的区别
+        y_hat = tf.to_int32(tf.argmax(logits, axis=-1)) # argmax 与 arg_max 的区别 (N,T2)
 
         return logits, y_hat, y, sents2
 

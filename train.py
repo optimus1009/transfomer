@@ -26,6 +26,8 @@ hp = parser.parse_args()
 save_hparams(hp, hp.logdir)
 
 logging.info("# Prepare train/eval batches")
+# num_train_batches 总样本量得 batch 数
+# num_train_sample 总样本量s
 train_batches, num_train_batches, num_train_samples = get_batch(hp.train1, hp.train2,
                                                                 hp.maxlen1, hp.maxlen2,
                                                                 hp.vocab, hp.batch_size,

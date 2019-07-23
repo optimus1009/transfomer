@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
 #/usr/bin/python2
 '''
-Feb. 2019 by kyubyong park.
-kbpark.linguist@gmail.com.
-https://www.github.com/kyubyong/transformer
-
 Inference
 '''
 
