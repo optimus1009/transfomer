@@ -161,14 +161,13 @@ if __name__ == "__main__":
                                                                     hp.vocab, hp.batch_size,
                                                                     shuffle=True)
     iter = tf.data.Iterator.from_structure(train_batches.output_types, train_batches.output_shapes)
-    xs = iter.get_next()
+    xs,ys = iter.get_next()
     train_init_op = iter.make_initializer(train_batches)
     with tf.Session() as sess:
         sess.run(train_init_op)
         while True:
             try:
                 dataset= sess.run(xs)
-                x,y =  dataset
-                print(x[-1][0])
+
             except tf.errors.OutOfRangeError:
                 break
