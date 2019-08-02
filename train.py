@@ -73,7 +73,7 @@ with tf.Session() as sess:
         summary_writer.add_summary(_summary, _gs)
         # h = sess.run(y_hat)
         if _gs and _gs % num_train_batches == 0:
-            logging.info("epoch {} is done".format(epoch))
+            logging.info("\nepoch {} is done".format(epoch))
             _loss = sess.run(loss)  # train loss
 
             logging.info("# test evaluation")
@@ -82,7 +82,7 @@ with tf.Session() as sess:
 
 
 
-            logging.info("# get hypotheses")
+            logging.info("\n# get hypotheses")
             hypotheses = get_hypotheses(num_eval_batches, num_eval_samples, sess, y_hat, m.idx2token)
 
             logging.info("# write results")
