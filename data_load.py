@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 #/usr/bin/python3
-
+"""
+Feb. 2019 by lin.xiong
+imlin.xiong@gmail.com.
+"""
 import tensorflow as tf
 from utils import calc_num_batches
 from hparams import Hparams
