@@ -134,6 +134,7 @@ class Transformer:
         nonpadding = tf.to_float(tf.not_equal(y, self.token2idx["<pad>"]))  # 0: <pad> 相当于mask，不等长序列最后计算loss要剔除padding项
         # 计算整个batch内的平均loss，1e-7防止分母为0的情况发生
         # ce * nonpadding 只计算非padding的 loss
+        # 分母为 tf.reduce_sum(nonpadding) 表示计算整个batch的平均loss
         loss = tf.reduce_sum(ce * nonpadding) / (tf.reduce_sum(nonpadding) + 1e-7)
 
         global_step = tf.train.get_or_create_global_step()

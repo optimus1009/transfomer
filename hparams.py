@@ -24,7 +24,7 @@ class Hparams:
                         help="vocabulary file path")
 
     # training scheme
-    parser.add_argument('--batch_size', default=10, type=int) # default = 128
+    parser.add_argument('--batch_size', default=32, type=int) # default = 128
     parser.add_argument('--eval_batch_size', default=10, type=int) # default = 128
 
     parser.add_argument('--lr', default=0.0003, type=float, help="learning rate")
@@ -34,17 +34,17 @@ class Hparams:
     parser.add_argument('--evaldir', default="eval/1", help="evaluation dir")
 
     # model
-    parser.add_argument('--d_model', default=128, type=int,
+    parser.add_argument('--d_model', default=256, type=int,
                         help="hidden dimension of encoder/decoder") # default = 512
-    parser.add_argument('--d_ff', default=200, type=int,
+    parser.add_argument('--d_ff', default=400, type=int,
                         help="hidden dimension of feedforward layer") # default = 2048
-    parser.add_argument('--num_blocks', default=6, type=int,
+    parser.add_argument('--num_blocks', default=4, type=int,
                         help="number of encoder/decoder blocks") # default = 6
-    parser.add_argument('--num_heads', default=8, type=int,
+    parser.add_argument('--num_heads', default=4, type=int,
                         help="number of attention heads") # default = 8
-    parser.add_argument('--maxlen1', default=20, type=int,
+    parser.add_argument('--maxlen1', default=80, type=int,
                         help="maximum length of a source sequence") # default = 100
-    parser.add_argument('--maxlen2', default=20, type=int,
+    parser.add_argument('--maxlen2', default=80, type=int,
                         help="maximum length of a target sequence") # default = 100
     parser.add_argument('--dropout_rate', default=0.3, type=float)
     parser.add_argument('--smoothing', default=0.1, type=float,
