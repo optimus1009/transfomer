@@ -157,7 +157,7 @@ class Transformer:
         y_hat: (N, T2)
         '''
         decoder_inputs, y, y_seqlen, sents2 = ys
-
+        # 初始化 decoder_inputs 的形状大小为: [batch_size, 1]
         decoder_inputs = tf.ones((tf.shape(xs[0])[0], 1), tf.int32) * self.token2idx["<s>"]
 
         ys = (decoder_inputs, y, y_seqlen, sents2)

@@ -45,7 +45,7 @@ with tf.Session() as sess:
     saver.restore(sess, ckpt)
 
     sess.run(test_init_op)
-
+    y_hat_value  = sess.run(y_hat)
     logging.info("# get hypotheses")
     hypotheses = get_hypotheses(num_test_batches, num_test_samples, sess, y_hat, m.idx2token)
 

@@ -71,7 +71,7 @@ with tf.Session() as sess:
         epoch = math.ceil(_gs / num_train_batches)
         summary_writer.add_summary(_summary, _gs)
         # h = sess.run(y_hat)
-        if _gs and _gs % num_train_batches == 0:
+        if _gs and _gs % 50 == 0:
             logging.info("\nepoch {} is done".format(epoch))
             _loss = sess.run(loss)  # train loss
 
@@ -82,6 +82,8 @@ with tf.Session() as sess:
 
 
             logging.info("\n# get hypotheses")
+            # num_eval_batches: 总评估batch数. num_eval_samples: 总的评估样本数
+            y_hat_value = sess.run(y_hat)
             hypotheses = get_hypotheses(num_eval_batches, num_eval_samples, sess, y_hat, m.idx2token)
 
             logging.info("# write results")

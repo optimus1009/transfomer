@@ -42,9 +42,9 @@ class Hparams:
                         help="number of encoder/decoder blocks") # default = 6
     parser.add_argument('--num_heads', default=4, type=int,
                         help="number of attention heads") # default = 8
-    parser.add_argument('--maxlen1', default=80, type=int,
+    parser.add_argument('--maxlen1', default=50, type=int,
                         help="maximum length of a source sequence") # default = 100
-    parser.add_argument('--maxlen2', default=80, type=int,
+    parser.add_argument('--maxlen2', default=50, type=int,
                         help="maximum length of a target sequence") # default = 100
     parser.add_argument('--dropout_rate', default=0.3, type=float)
     parser.add_argument('--smoothing', default=0.1, type=float,
@@ -55,6 +55,6 @@ class Hparams:
                         help="german test segmented data")
     parser.add_argument('--test2', default='iwslt2016/prepro/test.en',
                         help="english test data")
-    parser.add_argument('--ckpt', help="checkpoint file path")
+    parser.add_argument('--ckpt',default='log/1/hparams' , help="checkpoint file path")
     parser.add_argument('--test_batch_size', default=128, type=int)
     parser.add_argument('--testdir', default="test/1", help="test result dir")
