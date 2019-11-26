@@ -71,7 +71,7 @@ with tf.Session() as sess:
         epoch = math.ceil(_gs / num_train_batches)
         summary_writer.add_summary(_summary, _gs)
         # h = sess.run(y_hat)
-        if _gs and _gs % 50 == 0:
+        if _gs and _gs % 100 == 0:
             logging.info("\nepoch {} is done".format(epoch))
             _loss = sess.run(loss)  # train loss
 
@@ -90,7 +90,7 @@ with tf.Session() as sess:
             model_output = "iwslt2016_E%02dL%.2f" % (epoch, _loss)
             if not os.path.exists(hp.evaldir): os.makedirs(hp.evaldir)
             translation = os.path.join(hp.evaldir, model_output)
-            with open(translation, 'w') as fout:
+            with open(translation, 'w', encoding="utf-8") as fout:
                 fout.write("\n".join(hypotheses))
 
             logging.info("# calc bleu score and append it to translation")
